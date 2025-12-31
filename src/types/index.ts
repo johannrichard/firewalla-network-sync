@@ -14,10 +14,31 @@ export interface Client {
 }
 
 /**
- * Firewalla-specific client data
+ * Firewalla-specific client data based on MSP API v2
  */
 export interface FirewallaClient extends Client {
-  // Firewalla-specific fields can be added here
+  // Firewalla uses MAC address as ID
+  id: string; // MAC address (e.g., "AA:BB:CC:DD:EE:FF")
+  macAddress: string;
+  name?: string;
+  ipAddress?: string;
+
+  // Firewalla-specific fields
+  macVendor?: string;
+  gid?: string; // Firewalla box ID
+  ipReserved?: boolean;
+  online?: boolean;
+  lastSeen?: string;
+  network?: {
+    name: string;
+    id: string;
+  };
+  group?: {
+    name: string;
+    id: string;
+  };
+  totalDownload?: number;
+  totalUpload?: number;
 }
 
 /**
@@ -42,6 +63,7 @@ export interface Config {
   firewalla: {
     host: string;
     apiToken: string;
+    boxId?: string; // Optional: specific box ID, if not provided fetches from all boxes
   };
   // Sync configuration
   sync: {

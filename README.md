@@ -60,8 +60,9 @@ cp .env.example .env
 | `UNIFI_HOST` | UniFi Network controller URL | `https://192.168.1.1` |
 | `UNIFI_API_KEY` | UniFi API key for authentication | `your-api-key-here` |
 | `UNIFI_SITE_ID` | UniFi site ID (UUID format) | `550e8400-e29b-41d4-a716-446655440000` |
-| `FIREWALLA_HOST` | Firewalla host URL | `https://192.168.1.2` |
-| `FIREWALLA_API_TOKEN` | Firewalla API authentication token | `your-token-here` |
+| `FIREWALLA_HOST` | Firewalla MSP domain | `https://mydomain.firewalla.net` |
+| `FIREWALLA_API_TOKEN` | Firewalla personal access token | `your-token-here` |
+| `FIREWALLA_BOX_ID` | Firewalla box ID (UUID format) | `00000000-0000-0000-0000-000000000000` |
 
 ### Optional Environment Variables
 
@@ -80,9 +81,15 @@ cp .env.example .env
 3. Create a new API key
 4. Copy the API key and site ID
 
-#### Firewalla API Token
+#### Firewalla MSP API Token
 
-Refer to the [Firewalla API documentation](https://docs.firewalla.net) for instructions on obtaining an API token.
+1. Log into your Firewalla MSP account
+2. Navigate to your account settings
+3. Generate a personal access token
+4. Copy the token and your MSP domain (e.g., `mydomain.firewalla.net`)
+5. Find your Firewalla box ID (gid) from the Firewalla MSP interface
+
+For more details, refer to the [Firewalla MSP API documentation](https://docs.firewalla.net).
 
 ## Usage
 

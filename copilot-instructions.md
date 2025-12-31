@@ -37,7 +37,10 @@
 - `UNIFI_API_KEY` (required): UniFi API key for authentication
 - `UNIFI_SITE_ID` (required): UniFi site ID (UUID)
 - `FIREWALLA_HOST` (required): Firewalla host URL (e.g., `https://192.168.1.2`)
-- `FIREWALLA_API_TOKEN` (required): Firewalla API authentication token
+- `UNIFI_SITE_ID` (required): UniFi site ID (UUID)
+- `FIREWALLA_HOST` (required): Firewalla MSP domain (e.g., `https://mydomain.firewalla.net`)
+- `FIREWALLA_API_TOKEN` (required): Firewalla personal access token
+- `FIREWALLA_BOX_ID` (required): Firewalla box ID (gid)
 - `SYNC_INTERVAL_MINUTES` (default: `60`): How often to run sync (0 = run once and exit)
 - `DRY_RUN` (default: `false`): Set to `true` or `1` to enable dry-run mode
 - `LOG_LEVEL` (default: `info`): Logging level (debug, info, warn, error)
@@ -45,7 +48,7 @@
 ## Project-specific conventions & patterns
 
 - Safety-first: any changes must be verified before persisting — see `verifyChanges`. Never update UniFi without verification.
-- API authentication: UniFi uses API key in headers, Firewalla uses token-based auth.
+- API authentication: UniFi uses API key in `X-API-KEY` header, Firewalla MSP uses `Token` in Authorization header.
 - MAC address matching: Primary key for matching clients across systems (normalized to lowercase with colons).
 - Error handling: All API errors should be caught and logged; failures should not crash the entire sync process.
 - Bundling: Produce standalone single-file bundles with `esbuild` (target Node 18). Use `dist/firewalla-sync.min.js` for production.
@@ -60,12 +63,16 @@
 
 ## API Documentation
 
-### Firewalla API
+### Firewalla MSP API v2
 - Documentation: https://docs.firewalla.net
-- Used endpoints: Client listing and client details
+- Base URL: `https://msp_domain/v2`
+- Authentication: `Token` in Authorization header
+- Used endpoints:
+  - `GET /v2/devices` - List all devices (optionally filtered by box ID)
+  - `PATCH /v2/boxes/:gid/devices/:id` - Update device name (max 32 characters)
 
 ### UniFi Network API (v10.0.162)
-- Base path: `/v1` (some endpoints) or `/integration/v1`
+- Base path: `/v1`
 - Authentication: API key via `X-API-KEY` header
 - Key endpoints used:
   - `GET /v1/sites` - List sites

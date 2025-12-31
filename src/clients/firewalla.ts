@@ -1,12 +1,9 @@
 /**
- * Firewalla API client
- * Implements the Firewalla API for client management
+ * Firewalla MSP API client
+ * Implements the Firewalla MSP API v2 for device/client management
  * See: https://docs.firewalla.net
  *
- * ⚠️ WARNING: This is a PLACEHOLDER implementation!
- * The actual Firewalla API endpoints, authentication, and data structures
- * need to be verified against https://docs.firewalla.net before using in production.
- * See DEVELOPMENT.md for details on what needs to be updated.
+ * Based on Firewalla MSP API v2 documentation
  */
 
 import * as logger from '../logger.js';
@@ -15,14 +12,11 @@ import type { FirewallaClient } from '../types/index.js';
 interface FirewallaConfig {
   host: string;
   apiToken: string;
+  boxId?: string;
 }
 
 /**
- * Firewalla API client class
- *
- * Note: This is a placeholder implementation. The actual Firewalla API
- * endpoints and authentication mechanisms should be verified against
- * https://docs.firewalla.net and updated accordingly.
+ * Firewalla MSP API v2 client class
  */
 export class FirewallaApiClient {
   private config: FirewallaConfig;
@@ -30,18 +24,18 @@ export class FirewallaApiClient {
 
   constructor(config: FirewallaConfig) {
     this.config = config;
-    this.baseUrl = `${config.host}/api`;
+    this.baseUrl = `${config.host}/v2`;
   }
 
   /**
-   * Make an authenticated request to the Firewalla API
+   * Make an authenticated request to the Firewalla MSP API
    */
   private async request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     logger.debug(`Firewalla API request: ${method} ${url}`);
 
     const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.config.apiToken}`,
+      Authorization: `Token ${this.config.apiToken}`,
       'Content-Type': 'application/json',
     };
 
@@ -72,44 +66,55 @@ export class FirewallaApiClient {
   }
 
   /**
-   * Fetch all clients/devices from Firewalla
+   * Fetch all devices from Firewalla MSP
+   * GET /v2/devices
    *
-   * ⚠️ PLACEHOLDER IMPLEMENTATION - REQUIRES VERIFICATION
-   * The endpoint path, response format, and authentication need to be verified
-   * against the actual Firewalla API documentation at https://docs.firewalla.net
+   * @param boxId - Optional: Filter devices by specific Firewalla box
    */
-  async fetchClients(): Promise<FirewallaClient[]> {
-    logger.info('Fetching clients from Firewalla...');
-    logger.warn(
-      'WARNING: Using placeholder Firewalla API implementation. ' +
-        'Verify endpoints against https://docs.firewalla.net before production use.'
-    );
+  async fetchClients(boxId?: string): Promise<FirewallaClient[]> {
+    logger.info('Fetching devices from Firewalla MSP API...');
 
     try {
-      // TODO: Update this endpoint path based on actual Firewalla API documentation
-      const clients = await this.request<FirewallaClient[]>('/devices');
+      const queryBox = boxId || this.config.boxId;
+      const queryParams = queryBox ? `?box=${queryBox}` : '';
+      const clients = await this.request<FirewallaClient[]>(`/devices${queryParams}`);
 
-      logger.info(`Fetched ${clients.length} clients from Firewalla`);
+      logger.info(`Fetched ${clients.length} devices from Firewalla`);
       return clients;
     } catch (error) {
-      logger.error(`Failed to fetch clients from Firewalla: ${error}`);
-      logger.error(
-        'This is likely because the Firewalla API endpoint is a placeholder. ' +
-          'Please update src/clients/firewalla.ts with the correct endpoint from https://docs.firewalla.net'
-      );
+      logger.error(`Failed to fetch devices from Firewalla: ${error}`);
       throw error;
     }
   }
 
   /**
-   * Get detailed information about a specific client
+   * Update a device name in Firewalla MSP
+   * PATCH /v2/boxes/:gid/devices/:id
    *
-   * Note: Update endpoint path based on actual Firewalla API documentation
+   * @param boxId - Firewalla box ID (gid)
+   * @param deviceId - Device MAC address
+   * @param name - New device name (max 32 characters)
    */
-  async getClient(macAddress: string): Promise<FirewallaClient> {
-    logger.debug(`Fetching client details for ${macAddress}`);
-    // TODO: Update endpoint path based on actual API
-    return this.request<FirewallaClient>(`/devices/${macAddress}`);
+  async updateClient(boxId: string, deviceId: string, name: string): Promise<FirewallaClient> {
+    logger.debug(`Updating device ${deviceId} in box ${boxId} with name: ${name}`);
+
+    if (!name || name.length > 32) {
+      throw new Error('Device name must be between 1 and 32 characters');
+    }
+
+    try {
+      const updatedDevice = await this.request<FirewallaClient>(
+        `/boxes/${boxId}/devices/${deviceId}`,
+        'PATCH',
+        { name }
+      );
+
+      logger.info(`Successfully updated device ${deviceId} name to "${name}"`);
+      return updatedDevice;
+    } catch (error) {
+      logger.error(`Failed to update device ${deviceId}: ${error}`);
+      throw error;
+    }
   }
 }
 

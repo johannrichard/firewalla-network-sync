@@ -27,6 +27,7 @@ export function loadConfig(): Config {
     firewalla: {
       host: process.env.FIREWALLA_HOST as string,
       apiToken: process.env.FIREWALLA_API_TOKEN as string,
+      boxId: process.env.FIREWALLA_BOX_ID, // Optional
     },
     sync: {
       intervalMinutes: Number.parseInt(process.env.SYNC_INTERVAL_MINUTES || '60', 10),

@@ -1,79 +1,52 @@
 # Development Notes
 
-## Firewalla API Implementation
+## Firewalla MSP API Implementation
 
-**⚠️ IMPORTANT: The Firewalla API client implementation needs verification**
+✅ **The Firewalla API client is now fully implemented** based on the Firewalla MSP API v2 documentation.
 
-The current Firewalla API client (`src/clients/firewalla.ts`) is a **placeholder implementation** based on common REST API patterns. Since we don't have access to the complete Firewalla API documentation at https://docs.firewalla.net, the following need to be verified and updated:
+### Implemented Features
 
-### Items to Verify
+1. **Base URL**: `https://msp_domain/v2`
+2. **Authentication**: `Token` authentication in Authorization header
+3. **Get Devices**: `GET /v2/devices` - Fetch all devices (optionally filtered by box ID)
+4. **Update Device**: `PATCH /v2/boxes/:gid/devices/:id` - Update device name (max 32 characters)
 
-1. **Base URL/Endpoint Path**
-   - Current assumption: `${FIREWALLA_HOST}/api`
-   - May need adjustment based on actual API structure
+### API Structure
 
-2. **Authentication Method**
-   - Current implementation: Bearer token in Authorization header
-   - Verify this matches Firewalla's actual auth mechanism
+**Device Object:**
+```typescript
+{
+  id: string;              // MAC address (e.g., "AA:BB:CC:DD:EE:FF")
+  macVendor: string;       // Manufacturer
+  gid: string;             // Firewalla box ID
+  ip: string;              // IP address
+  ipReserved: boolean;     // Whether IP is reserved
+  name: string;            // Device name
+  online: boolean;         // Online status
+  lastSeen: string;        // Timestamp
+  network: {
+    name: string;
+    id: string;
+  };
+  group: {
+    name: string;
+    id: string;
+  };
+  totalDownload: number;
+  totalUpload: number;
+}
+```
 
-3. **Client Listing Endpoint**
-   - Current assumption: `GET /api/devices`
-   - Need to verify:
-     - Correct endpoint path
-     - Response format
-     - Pagination (if needed)
-     - Available client fields
+### Configuration
 
-4. **Client Data Structure**
-   - Verify the actual structure of client/device objects
-   - Ensure we're correctly accessing:
-     - `id` field
-     - `name` field
-     - `macAddress` field
-     - `ipAddress` field (optional)
-
-### How to Update the Firewalla Client
-
-Once you have access to the Firewalla API documentation:
-
-1. **Review the Authentication**
-   ```typescript
-   // In src/clients/firewalla.ts, update the headers in the request method:
-   const headers: Record<string, string> = {
-     Authorization: `Bearer ${this.config.apiToken}`, // Verify this format
-     'Content-Type': 'application/json',
-   };
-   ```
-
-2. **Update the Base URL**
-   ```typescript
-   // In the constructor:
-   this.baseUrl = `${config.host}/api`; // Update /api to correct path
-   ```
-
-3. **Update the fetchClients Method**
-   ```typescript
-   async fetchClients(): Promise<FirewallaClient[]> {
-     // Update '/devices' to the correct endpoint
-     const clients = await this.request<FirewallaClient[]>('/devices');
-     return clients;
-   }
-   ```
-
-4. **Update Type Definitions**
-   ```typescript
-   // In src/types/index.ts, add Firewalla-specific fields if needed:
-   export interface FirewallaClient extends Client {
-     // Add any Firewalla-specific fields here
-     deviceType?: string;
-     manufacturer?: string;
-     // etc.
-   }
-   ```
+The Firewalla client requires:
+- `FIREWALLA_HOST`: Your MSP domain (e.g., `https://mydomain.firewalla.net`)
+- `FIREWALLA_API_TOKEN`: Personal access token from Firewalla MSP
+- `FIREWALLA_BOX_ID`: Your Firewalla box ID (gid) - Required for filtering devices and updates
 
 ### Testing the Firewalla Client
 
-Once updated, test the API client:
+Test the Firewalla API client independently:
 
 ```bash
 # Create a test script
@@ -83,11 +56,13 @@ import { createFirewallaClient } from './dist/clients/firewalla.js';
 const client = createFirewallaClient({
   host: process.env.FIREWALLA_HOST,
   apiToken: process.env.FIREWALLA_API_TOKEN,
+  boxId: process.env.FIREWALLA_BOX_ID,
 });
 
 try {
-  const clients = await client.fetchClients();
-  console.log('Fetched clients:', clients);
+  const devices = await client.fetchClients();
+  console.log('Fetched devices:', devices.length);
+  console.log('Sample device:', devices[0]);
 } catch (error) {
   console.error('Error:', error);
 }
