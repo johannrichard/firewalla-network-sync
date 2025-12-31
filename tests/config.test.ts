@@ -156,6 +156,31 @@ describe('validateConfig', () => {
       },
     };
 
-    expect(() => validateConfig(config)).toThrow('SYNC_INTERVAL_MINUTES must be >= 0');
+    expect(() => validateConfig(config)).toThrow(
+      'SYNC_INTERVAL_MINUTES must be a valid number >= 0'
+    );
+  });
+
+  test('rejects NaN sync interval', () => {
+    const config = {
+      unifi: {
+        host: 'https://unifi.example.com',
+        apiKey: 'test-key',
+        siteId: '550e8400-e29b-41d4-a716-446655440000',
+      },
+      firewalla: {
+        host: 'https://firewalla.example.com',
+        apiToken: 'test-token',
+      },
+      sync: {
+        intervalMinutes: Number.NaN,
+        dryRun: false,
+        logLevel: 'info' as const,
+      },
+    };
+
+    expect(() => validateConfig(config)).toThrow(
+      'SYNC_INTERVAL_MINUTES must be a valid number >= 0'
+    );
   });
 });

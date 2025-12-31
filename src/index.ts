@@ -156,7 +156,15 @@ async function main(): Promise<void> {
 }
 
 // Run main if this is the entry point
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Normalize paths for cross-platform compatibility
+const normalizedUrl = import.meta.url.replace(/^file:\/\//, '');
+const normalizedArgv = process.argv[1]?.replace(/\\/g, '/') || '';
+
+if (
+  normalizedUrl === normalizedArgv ||
+  normalizedUrl.endsWith(normalizedArgv) ||
+  normalizedArgv.endsWith(normalizedUrl)
+) {
   main().catch((error) => {
     logger.error(`Unhandled error: ${error}`);
     process.exit(1);

@@ -55,7 +55,7 @@ export function validateConfig(config: Config): void {
   }
 
   // Validate sync interval
-  if (config.sync.intervalMinutes < 0) {
-    throw new Error('SYNC_INTERVAL_MINUTES must be >= 0');
+  if (config.sync.intervalMinutes < 0 || Number.isNaN(config.sync.intervalMinutes)) {
+    throw new Error('SYNC_INTERVAL_MINUTES must be a valid number >= 0');
   }
 }

@@ -110,16 +110,29 @@ export class UniFiApiClient {
 
   /**
    * Update client information
-   * Note: The UniFi API documentation doesn't explicitly show a client name update endpoint,
-   * so this is a placeholder that may need adjustment based on actual API capabilities
+   *
+   * ⚠️ WARNING: This endpoint may not be supported by the UniFi API.
+   * The UniFi Network API documentation doesn't explicitly show a client update endpoint.
+   * This method is implemented based on standard REST conventions but may fail at runtime.
+   * If the API doesn't support client updates, you may need to use an alternative approach
+   * such as updating via the UniFi controller's web interface or using device aliases.
    */
   async updateClient(clientId: string, updates: { name?: string }): Promise<UniFiClient> {
     logger.debug(`Updating client ${clientId}:`, updates);
-    return this.request<UniFiClient>(
-      `/sites/${this.config.siteId}/clients/${clientId}`,
-      'PUT',
-      updates
-    );
+    try {
+      return await this.request<UniFiClient>(
+        `/sites/${this.config.siteId}/clients/${clientId}`,
+        'PUT',
+        updates
+      );
+    } catch (error) {
+      logger.error(`Failed to update client ${clientId}: ${error}`);
+      logger.warn(
+        'The UniFi API may not support direct client name updates. ' +
+          'Consider alternative approaches such as fixed client assignments or DHCP reservations.'
+      );
+      throw error;
+    }
   }
 }
 

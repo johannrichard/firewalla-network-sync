@@ -2,6 +2,11 @@
  * Firewalla API client
  * Implements the Firewalla API for client management
  * See: https://docs.firewalla.net
+ *
+ * ⚠️ WARNING: This is a PLACEHOLDER implementation!
+ * The actual Firewalla API endpoints, authentication, and data structures
+ * need to be verified against https://docs.firewalla.net before using in production.
+ * See DEVELOPMENT.md for details on what needs to be updated.
  */
 
 import * as logger from '../logger.js';
@@ -69,11 +74,16 @@ export class FirewallaApiClient {
   /**
    * Fetch all clients/devices from Firewalla
    *
-   * Note: The exact endpoint path needs to be verified from the Firewalla API documentation.
-   * This is a placeholder implementation that assumes a /devices or /clients endpoint.
+   * ⚠️ PLACEHOLDER IMPLEMENTATION - REQUIRES VERIFICATION
+   * The endpoint path, response format, and authentication need to be verified
+   * against the actual Firewalla API documentation at https://docs.firewalla.net
    */
   async fetchClients(): Promise<FirewallaClient[]> {
     logger.info('Fetching clients from Firewalla...');
+    logger.warn(
+      'WARNING: Using placeholder Firewalla API implementation. ' +
+        'Verify endpoints against https://docs.firewalla.net before production use.'
+    );
 
     try {
       // TODO: Update this endpoint path based on actual Firewalla API documentation
@@ -83,6 +93,10 @@ export class FirewallaApiClient {
       return clients;
     } catch (error) {
       logger.error(`Failed to fetch clients from Firewalla: ${error}`);
+      logger.error(
+        'This is likely because the Firewalla API endpoint is a placeholder. ' +
+          'Please update src/clients/firewalla.ts with the correct endpoint from https://docs.firewalla.net'
+      );
       throw error;
     }
   }

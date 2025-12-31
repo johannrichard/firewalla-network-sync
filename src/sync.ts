@@ -7,13 +7,24 @@ import type { FirewallaClient, SyncSummary, UniFiClient, UpdateResult } from './
 
 /**
  * Normalize MAC address to a consistent format (lowercase with colons)
+ * Returns null if the input is not a valid MAC address format
  */
 export function normalizeMacAddress(mac: string): string {
   // Remove any separators and convert to lowercase
   const cleaned = mac.replace(/[:-]/g, '').toLowerCase();
 
+  // Validate that we have exactly 12 hex characters
+  if (!/^[0-9a-f]{12}$/.test(cleaned)) {
+    throw new Error(`Invalid MAC address format: ${mac}`);
+  }
+
   // Add colons every 2 characters
-  return cleaned.match(/.{1,2}/g)?.join(':') || cleaned;
+  const withColons = cleaned.match(/.{1,2}/g);
+  if (!withColons) {
+    throw new Error(`Failed to format MAC address: ${mac}`);
+  }
+
+  return withColons.join(':');
 }
 
 /**

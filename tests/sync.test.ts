@@ -22,6 +22,18 @@ describe('normalizeMacAddress', () => {
   test('handles mixed case', () => {
     expect(normalizeMacAddress('Aa:Bb:Cc:Dd:Ee:Ff')).toBe('aa:bb:cc:dd:ee:ff');
   });
+
+  test('throws error for invalid MAC address format', () => {
+    expect(() => normalizeMacAddress('invalid')).toThrow('Invalid MAC address format');
+  });
+
+  test('throws error for too short MAC address', () => {
+    expect(() => normalizeMacAddress('AA:BB:CC')).toThrow('Invalid MAC address format');
+  });
+
+  test('throws error for non-hex characters', () => {
+    expect(() => normalizeMacAddress('GG:HH:II:JJ:KK:LL')).toThrow('Invalid MAC address format');
+  });
 });
 
 describe('matchClients', () => {
