@@ -2,12 +2,12 @@
 
 ## Repository Overview
 
-This repository contains code to synchronize client names between Firewalla (master) and UniFi Network. The synchronization ensures that device names from Firewalla are propagated to UniFi Network for consistent network management.
+This repository contains code to synchronise client names between Firewalla (master) and UniFi Network. The synchronisation ensures that device names from Firewalla are propagated to UniFi Network for consistent network management.
 
 ## Project Type
 
 - **Language**: Node.js/JavaScript
-- **Primary Purpose**: Network device name synchronization
+- **Primary Purpose**: Network device name synchronisation
 - **Integration Points**: Firewalla API, UniFi Network API
 
 ## Development Guidelines
@@ -15,6 +15,7 @@ This repository contains code to synchronize client names between Firewalla (mas
 ### Code Style
 
 - Follow standard JavaScript/Node.js conventions
+- Use British English spelling (e.g., "synchronise" not "synchronize")
 - Use consistent indentation (2 spaces)
 - Prefer async/await over callback-based patterns for asynchronous operations
 - Use descriptive variable and function names that reflect the networking context
@@ -22,7 +23,7 @@ This repository contains code to synchronize client names between Firewalla (mas
 ### API Integration
 
 - Firewalla is the source of truth for client names (master)
-- UniFi Network is the target for synchronization
+- UniFi Network is the target for synchronisation
 - Handle API authentication securely
 - Implement proper error handling for network requests
 - Use environment variables for credentials and configuration
@@ -53,7 +54,7 @@ This repository contains code to synchronize client names between Firewalla (mas
 - Write tests for API integration logic
 - Mock external API calls in unit tests
 - Test error handling scenarios
-- Verify synchronization logic with various client name formats
+- Verify synchronisation logic with various client name formats
 
 ## Security Considerations
 
