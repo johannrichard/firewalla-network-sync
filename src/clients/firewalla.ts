@@ -4,8 +4,8 @@
  * See: https://docs.firewalla.net
  */
 
-import type { FirewallaClient } from '../types/index.js';
 import * as logger from '../logger.js';
+import type { FirewallaClient } from '../types/index.js';
 
 interface FirewallaConfig {
   host: string;
@@ -31,11 +31,7 @@ export class FirewallaApiClient {
   /**
    * Make an authenticated request to the Firewalla API
    */
-  private async request<T>(
-    path: string,
-    method = 'GET',
-    body?: unknown
-  ): Promise<T> {
+  private async request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     logger.debug(`Firewalla API request: ${method} ${url}`);
 

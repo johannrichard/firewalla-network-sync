@@ -3,17 +3,17 @@
  * Synchronizes client names from Firewalla (master) to UniFi Network
  */
 
-import { loadConfig, validateConfig } from './config.js';
 import { createFirewallaClient } from './clients/firewalla.js';
 import { createUniFiClient } from './clients/unifi.js';
-import {
-  matchClients,
-  findClientsToUpdate,
-  verifyChanges,
-  createSyncSummary,
-  logSyncSummary,
-} from './sync.js';
+import { loadConfig, validateConfig } from './config.js';
 import * as logger from './logger.js';
+import {
+  createSyncSummary,
+  findClientsToUpdate,
+  logSyncSummary,
+  matchClients,
+  verifyChanges,
+} from './sync.js';
 import type { UpdateResult } from './types/index.js';
 
 /**
@@ -82,11 +82,8 @@ async function performSync(
           result.success = true;
         }
       } catch (error) {
-        result.error =
-          error instanceof Error ? error.message : String(error);
-        logger.error(
-          `Failed to update client ${unifi.macAddress}: ${result.error}`
-        );
+        result.error = error instanceof Error ? error.message : String(error);
+        logger.error(`Failed to update client ${unifi.macAddress}: ${result.error}`);
       }
 
       results.push(result);
@@ -97,9 +94,7 @@ async function performSync(
     logSyncSummary(summary);
 
     if (summary.failedUpdates > 0) {
-      logger.warn(
-        `Sync completed with ${summary.failedUpdates} failed updates`
-      );
+      logger.warn(`Sync completed with ${summary.failedUpdates} failed updates`);
     } else {
       logger.info('Sync completed successfully');
     }
@@ -138,9 +133,7 @@ async function main(): Promise<void> {
     // Set up interval sync if configured
     if (config.sync.intervalMinutes > 0) {
       const intervalMs = config.sync.intervalMinutes * 60 * 1000;
-      logger.info(
-        `Scheduling sync every ${config.sync.intervalMinutes} minutes`
-      );
+      logger.info(`Scheduling sync every ${config.sync.intervalMinutes} minutes`);
 
       setInterval(async () => {
         try {
@@ -171,7 +164,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 // Export functions for testing
-export {
-  performSync,
-  main,
-};
+export { performSync, main };

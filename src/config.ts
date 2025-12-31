@@ -45,14 +45,11 @@ export function validateConfig(config: Config): void {
     new URL(config.unifi.host);
     new URL(config.firewalla.host);
   } catch (error) {
-    throw new Error(
-      `Invalid host URL: ${error instanceof Error ? error.message : String(error)}`
-    );
+    throw new Error(`Invalid host URL: ${error instanceof Error ? error.message : String(error)}`);
   }
 
   // Validate site ID is a UUID
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(config.unifi.siteId)) {
     throw new Error('UNIFI_SITE_ID must be a valid UUID');
   }

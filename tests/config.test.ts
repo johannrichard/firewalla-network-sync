@@ -2,7 +2,7 @@
  * Unit tests for config.ts functions
  */
 
-import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { loadConfig, validateConfig } from '../src/config';
 
 describe('loadConfig', () => {

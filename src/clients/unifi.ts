@@ -3,8 +3,8 @@
  * Implements the UniFi Network API v10.0.162
  */
 
-import type { UniFiClient } from '../types/index.js';
 import * as logger from '../logger.js';
+import type { UniFiClient } from '../types/index.js';
 
 interface UniFiConfig {
   host: string;
@@ -35,11 +35,7 @@ export class UniFiApiClient {
   /**
    * Make an authenticated request to the UniFi API
    */
-  private async request<T>(
-    path: string,
-    method = 'GET',
-    body?: unknown
-  ): Promise<T> {
+  private async request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     logger.debug(`UniFi API request: ${method} ${url}`);
 
@@ -109,9 +105,7 @@ export class UniFiApiClient {
    */
   async getClient(clientId: string): Promise<UniFiClient> {
     logger.debug(`Fetching client details for ${clientId}`);
-    return this.request<UniFiClient>(
-      `/sites/${this.config.siteId}/clients/${clientId}`
-    );
+    return this.request<UniFiClient>(`/sites/${this.config.siteId}/clients/${clientId}`);
   }
 
   /**
@@ -119,10 +113,7 @@ export class UniFiApiClient {
    * Note: The UniFi API documentation doesn't explicitly show a client name update endpoint,
    * so this is a placeholder that may need adjustment based on actual API capabilities
    */
-  async updateClient(
-    clientId: string,
-    updates: { name?: string }
-  ): Promise<UniFiClient> {
+  async updateClient(clientId: string, updates: { name?: string }): Promise<UniFiClient> {
     logger.debug(`Updating client ${clientId}:`, updates);
     return this.request<UniFiClient>(
       `/sites/${this.config.siteId}/clients/${clientId}`,

@@ -2,8 +2,8 @@
  * Synchronization logic for client names between Firewalla and UniFi
  */
 
-import type { FirewallaClient, UniFiClient, SyncSummary, UpdateResult } from './types/index.js';
 import * as logger from './logger.js';
+import type { FirewallaClient, SyncSummary, UniFiClient, UpdateResult } from './types/index.js';
 
 /**
  * Normalize MAC address to a consistent format (lowercase with colons)
@@ -76,22 +76,16 @@ export function findClientsToUpdate(
  * Verify that only the name field would be changed
  * This implements the safety-first principle from the copilot instructions
  */
-export function verifyChanges(
-  original: UniFiClient,
-  updates: { name?: string }
-): void {
+export function verifyChanges(original: UniFiClient, updates: { name?: string }): void {
   // Ensure we're only modifying the name field
   const allowedFields = ['name'];
   const updateFields = Object.keys(updates);
 
-  const disallowedFields = updateFields.filter(
-    (field) => !allowedFields.includes(field)
-  );
+  const disallowedFields = updateFields.filter((field) => !allowedFields.includes(field));
 
   if (disallowedFields.length > 0) {
     throw new Error(
-      `Attempted to modify disallowed fields: ${disallowedFields.join(', ')}. ` +
-        'Only "name" field is allowed for safety.'
+      `Attempted to modify disallowed fields: ${disallowedFields.join(', ')}. Only "name" field is allowed for safety.`
     );
   }
 

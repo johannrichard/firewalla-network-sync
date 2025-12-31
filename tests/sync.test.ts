@@ -3,12 +3,7 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import {
-  normalizeMacAddress,
-  matchClients,
-  findClientsToUpdate,
-  verifyChanges,
-} from '../src/sync';
+import { findClientsToUpdate, matchClients, normalizeMacAddress, verifyChanges } from '../src/sync';
 import type { FirewallaClient, UniFiClient } from '../src/types';
 
 describe('normalizeMacAddress', () => {
